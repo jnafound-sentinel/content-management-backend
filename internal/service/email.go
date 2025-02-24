@@ -20,12 +20,6 @@ type EmailService struct {
 	templates *template.Template
 }
 
-type ResetEmailData struct {
-	ResetLink   string
-	Username    string
-	ExpiryHours int
-}
-
 func NewEmailService(cfg *config.Config) (*EmailService, error) {
 	templates, err := template.ParseGlob(filepath.Join("templates", "emails", "*.html"))
 	if err != nil {
@@ -50,7 +44,12 @@ func (s *EmailService) SendPasswordResetEmail(to, resetToken, username string) (
 	}
 
 	var body bytes.Buffer
-	data := ResetEmailData{
+
+	data := struct {
+		ResetLink   string
+		Username    string
+		ExpiryHours int
+	}{
 		ResetLink:   fmt.Sprintf("https://%s/reset-password?token=%s", resendDomain.Name, resetToken),
 		Username:    username,
 		ExpiryHours: 1,
@@ -61,7 +60,7 @@ func (s *EmailService) SendPasswordResetEmail(to, resetToken, username string) (
 	}
 
 	params := &resend.SendEmailRequest{
-		From:    fmt.Sprintf("Robolabs <info@%s>", resendDomain.Name),
+		From:    fmt.Sprintf("JNA FOUNDATION <info@%s>", resendDomain.Name),
 		To:      []string{to},
 		Html:    body.String(),
 		Subject: "Reset Password",
@@ -97,10 +96,10 @@ func (s *EmailService) SendVerificationEmail(to, username, verificationToken str
 	}
 
 	params := &resend.SendEmailRequest{
-		From:    fmt.Sprintf("Robolabs <info@%s>", resendDomain.Name),
+		From:    fmt.Sprintf("JNA FOUNDATION <info@%s>", resendDomain.Name),
 		To:      []string{to},
 		Html:    body.String(),
-		Subject: "Reset Password",
+		Subject: "Verify Account",
 	}
 
 	sent, err := s.client.Client.Emails.Send(params)
