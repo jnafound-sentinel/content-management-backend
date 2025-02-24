@@ -107,10 +107,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	// if err := h.userService.UpdateUser(user); err != nil {
-	// 	c.JSON(http.StatusUnauthorized, response.NewServerResponse(err))
-	// }
-
 	token, err := h.generateJWTToken(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.NewServerResponse(err.Error()))
