@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Donation struct {
@@ -15,6 +16,11 @@ type Donation struct {
 	Description string `gorm:"type:text" json:"description"`
 
 	Payments []Payment `gorm:"foreignKey:DonationID" json:"payments"`
+}
+
+func (b *Donation) BeforeCreate(tx *gorm.DB) (err error) {
+	b.ID = uuid.New()
+	return
 }
 
 func (e *Donation) TableName() string {
