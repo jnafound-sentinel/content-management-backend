@@ -9,6 +9,7 @@ import (
 	"jna-manager/internal/repository/interfaces"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -80,7 +81,7 @@ func (s *UserService) ResendVerification(email string) (string, error) {
 }
 
 func (s *UserService) GetUser(id string) (*schemas.UserResponse, error) {
-	dbUser, err := s.repo.GetByID(id)
+	dbUser, err := s.repo.GetByID(uuid.MustParse(id))
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +131,7 @@ func (s *UserService) UpdateUser(user *models.User) error {
 }
 
 func (s *UserService) DeleteUser(id string) error {
-	return s.repo.Delete(id)
+	return s.repo.Delete(uuid.MustParse(id))
 }
 
 func (s *UserService) ListUsers(page, pageSize int) ([]schemas.UserResponse, int64, error) {
