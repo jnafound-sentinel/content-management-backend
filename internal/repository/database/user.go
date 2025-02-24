@@ -6,6 +6,7 @@ import (
 	"jna-manager/internal/repository/interfaces"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +22,7 @@ func (r *userRepository) Create(user *models.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *userRepository) GetByID(id string) (*models.User, error) {
+func (r *userRepository) GetByID(id uuid.UUID) (*models.User, error) {
 	var user models.User
 	err := r.db.First(&user, id).Error
 	if err != nil {
@@ -52,7 +53,7 @@ func (r *userRepository) Update(user *models.User) error {
 	return r.db.Save(user).Error
 }
 
-func (r *userRepository) Delete(id string) error {
+func (r *userRepository) Delete(id uuid.UUID) error {
 	return r.db.Delete(&models.User{}, id).Error
 }
 
@@ -84,12 +85,12 @@ func (r *userRepository) GetByResetToken(token string, currentTime time.Time) (*
 	return &user, nil
 }
 
-func (r *userRepository) UpdatePassword(userID string, hashedPassword string) error {
+func (r *userRepository) UpdatePassword(userID uuid.UUID, hashedPassword string) error {
 	return r.db.Model(&models.User{}).Where("id = ?", userID).
 		Update("password", hashedPassword).Error
 }
 
-func (r *userRepository) ClearResetToken(userID string) error {
+func (r *userRepository) ClearResetToken(userID uuid.UUID) error {
 	return r.db.Model(&models.User{}).Where("id = ?", userID).
 		Updates(map[string]interface{}{
 			"password_reset_token": "",
@@ -97,7 +98,7 @@ func (r *userRepository) ClearResetToken(userID string) error {
 		}).Error
 }
 
-func (r *userRepository) SetResetToken(userID string, token string, expiry time.Time) error {
+func (r *userRepository) SetResetToken(userID uuid.UUID, token string, expiry time.Time) error {
 	return r.db.Model(&models.User{}).Where("id = ?", userID).
 		Updates(map[string]interface{}{
 			"password_reset_token": token,
@@ -124,8 +125,8 @@ func (r *userRepository) GetByVerificationToken(token string) (*models.User, err
 	return &user, nil
 }
 
-func (r *userRepository) SetEmailVerified(userID string) error {
-	if userID == "" {
+func (r *userRepository) SetEmailVerified(userID uuid.UUID) error {
+	if userID.String() == "" {
 		return errors.New("user ID is required")
 	}
 
@@ -147,10 +148,11 @@ func (r *userRepository) SetEmailVerified(userID string) error {
 	return nil
 }
 
-func (r *userRepository) SetVerificationToken(userID string, token string, expiry time.Time) error {
-	if userID == "" {
+func (r *userRepository) SetVerificationToken(userID uuid.UUID, token string, expiry time.Time) error {
+	if userID.String() == "" {
 		return errors.New("user ID is required")
 	}
+
 	if token == "" {
 		return errors.New("verification token is required")
 	}

@@ -3,23 +3,25 @@ package interfaces
 import (
 	models "jna-manager/internal/domain/models/users"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type UserRepository interface {
 	Create(user *models.User) error
-	GetByID(id string) (*models.User, error)
+	GetByID(id uuid.UUID) (*models.User, error)
 	GetByName(username string) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	Update(user *models.User) error
-	Delete(id string) error
+	Delete(id uuid.UUID) error
 	List(page, pageSize int) ([]models.User, int64, error)
 
 	GetByVerificationToken(token string) (*models.User, error)
-	SetEmailVerified(userID string) error
-	SetVerificationToken(userID string, token string, expiry time.Time) error
+	SetEmailVerified(userID uuid.UUID) error
+	SetVerificationToken(userID uuid.UUID, token string, expiry time.Time) error
 
 	GetByResetToken(token string, currentTime time.Time) (*models.User, error)
-	UpdatePassword(userID string, hashedPassword string) error
-	ClearResetToken(userID string) error
-	SetResetToken(userID string, token string, expiry time.Time) error
+	UpdatePassword(userID uuid.UUID, hashedPassword string) error
+	ClearResetToken(userID uuid.UUID) error
+	SetResetToken(userID uuid.UUID, token string, expiry time.Time) error
 }
