@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -79,7 +80,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	}
 
 	user := models.User{
-		ID:       id,
+		ID:       uuid.MustParse(id),
 		Username: user_update.Username,
 		Password: string(hashedPassword),
 	}
