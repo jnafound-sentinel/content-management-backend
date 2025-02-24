@@ -13,7 +13,7 @@ type User struct {
 	Username string `gorm:"size:50;unique;not null"`
 	Password string `gorm:"size:255;not null"`
 	Email    string `gorm:"size:100;unique;not null"`
-	UserRole string `gorm:"type:varchar(20);default:'student'"`
+	UserRole string `gorm:"type:varchar(20);default:'common'"`
 
 	EmailVerified     bool   `gorm:"default:false"`
 	VerificationToken string `gorm:"size:100"`
