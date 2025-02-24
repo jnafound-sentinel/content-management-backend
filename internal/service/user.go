@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"errors"
 	models "jna-manager/internal/domain/models/users"
+	"jna-manager/internal/domain/schemas"
 	"jna-manager/internal/repository/interfaces"
 	"time"
 
@@ -78,16 +79,50 @@ func (s *UserService) ResendVerification(email string) (string, error) {
 	return verificationToken, nil
 }
 
-func (s *UserService) GetUser(id string) (*models.User, error) {
-	return s.repo.GetByID(id)
+func (s *UserService) GetUser(id string) (*schemas.UserResponse, error) {
+	dbUser, err := s.repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schemas.UserResponse{
+		ID:            dbUser.ID,
+		Username:      dbUser.Username,
+		Email:         dbUser.Email,
+		UserRole:      dbUser.UserRole,
+		EmailVerified: dbUser.EmailVerified,
+	}, nil
 }
 
-func (s *UserService) GetUserByUsername(username string) (*models.User, error) {
-	return s.repo.GetByName(username)
+func (s *UserService) GetUserByUsername(username string) (*schemas.UserResponse, error) {
+	dbUser, err := s.repo.GetByName(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schemas.UserResponse{
+		ID:            dbUser.ID,
+		Username:      dbUser.Username,
+		Password:      dbUser.Password,
+		Email:         dbUser.Email,
+		UserRole:      dbUser.UserRole,
+		EmailVerified: dbUser.EmailVerified,
+	}, nil
 }
 
-func (s *UserService) GetUserByEmail(email string) (*models.User, error) {
-	return s.repo.GetByEmail(email)
+func (s *UserService) GetUserByEmail(email string) (*schemas.UserResponse, error) {
+	dbUser, err := s.repo.GetByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schemas.UserResponse{
+		ID:            dbUser.ID,
+		Username:      dbUser.Username,
+		Email:         dbUser.Email,
+		UserRole:      dbUser.UserRole,
+		EmailVerified: dbUser.EmailVerified,
+	}, nil
 }
 
 func (s *UserService) UpdateUser(user *models.User) error {
@@ -98,8 +133,26 @@ func (s *UserService) DeleteUser(id string) error {
 	return s.repo.Delete(id)
 }
 
-func (s *UserService) ListUsers(page, pageSize int) ([]models.User, int64, error) {
-	return s.repo.List(page, pageSize)
+func (s *UserService) ListUsers(page, pageSize int) ([]schemas.UserResponse, int64, error) {
+	dbUsers, total, err := s.repo.List(page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var users []schemas.UserResponse
+	users = make([]schemas.UserResponse, total, total)
+
+	for i, dbUser := range dbUsers {
+		users[i] = schemas.UserResponse{
+			ID:            dbUser.ID,
+			Username:      dbUser.Username,
+			Email:         dbUser.Email,
+			UserRole:      dbUser.UserRole,
+			EmailVerified: dbUser.EmailVerified,
+		}
+	}
+
+	return users, total, nil
 }
 
 func (s *UserService) ResetPassword(token, newPassword string) error {
