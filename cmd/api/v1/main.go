@@ -6,6 +6,7 @@ import (
 
 	"jna-manager/internal/config"
 	"jna-manager/internal/handler"
+	"jna-manager/internal/migrations"
 	"jna-manager/internal/repository/database"
 	"jna-manager/internal/service"
 
@@ -25,10 +26,18 @@ func main() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	// Initialize repositories
+	result := db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+	if result.Error != nil {
+		log.Fatal("failed to enable uuid-ossp extension: %w", result.Error)
+	}
+
+	err = db.AutoMigrate(migrations.GetMigrationModels()...)
+	if err != nil {
+		log.Fatal("Failed to perform Database Migrations")
+	}
+
 	userRepo := database.NewUserRepository(db)
 
-	// Initialize services
 	userService := service.NewUserService(userRepo)
 
 	emailService, err := service.NewEmailService(cfg)
@@ -36,11 +45,9 @@ func main() {
 		log.Fatal("Could not load Email Service configurations and Templates.")
 	}
 
-	// Initialize handlers
 	userHandler := handler.NewUserHandler(userService, cfg)
 	authHandler := handler.NewAuthHandler(userService, emailService, cfg)
 
-	// Setup router
 	r := gin.Default()
 
 	api := r.Group("/api")
