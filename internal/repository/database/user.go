@@ -13,10 +13,6 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-type parentRepository struct {
-	db *gorm.DB
-}
-
 func NewUserRepository(db *gorm.DB) interfaces.UserRepository {
 	return &userRepository{db: db}
 }
