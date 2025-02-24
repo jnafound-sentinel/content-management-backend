@@ -63,6 +63,15 @@ func JWTMiddleware(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
+		isVerified, ok := claims["is_verified"].(bool)
+		if !ok && !isVerified {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "User is not verified to access",
+			})
+			return
+		}
+
 		// Check the user's role against the required roles for the current endpoint
 		requiredRoles := c.GetStringSlice("requiredRoles")
 		if len(requiredRoles) > 0 && !containsRole(requiredRoles, userRole) {
