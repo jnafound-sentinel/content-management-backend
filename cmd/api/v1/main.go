@@ -37,8 +37,10 @@ func main() {
 	}
 
 	userRepo := database.NewUserRepository(db)
+	blogRepo := database.NewBlogRepository(db)
 
 	userService := service.NewUserService(userRepo)
+	blogService := service.NewBlogService(blogRepo)
 
 	emailService, err := service.NewEmailService(cfg)
 	if err != nil {
@@ -47,6 +49,7 @@ func main() {
 
 	userHandler := handler.NewUserHandler(userService, cfg)
 	authHandler := handler.NewAuthHandler(userService, emailService, cfg)
+	blogHandler := handler.NewBlogHandler(blogService, cfg)
 
 	r := gin.Default()
 
@@ -54,6 +57,7 @@ func main() {
 	{
 		userHandler.RegisterRoutes(api)
 		authHandler.RegisterRoutes(api)
+		blogHandler.RegisterRoutes(api)
 	}
 
 	r.Run(fmt.Sprintf(":%s", cfg.Port))
