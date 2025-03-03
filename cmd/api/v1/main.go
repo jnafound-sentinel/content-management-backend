@@ -10,6 +10,7 @@ import (
 	"jna-manager/internal/repository/database"
 	"jna-manager/internal/service"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -52,6 +53,7 @@ func main() {
 	blogHandler := handler.NewBlogHandler(blogService, cfg)
 
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	api := r.Group("/api")
 	{
