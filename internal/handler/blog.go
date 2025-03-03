@@ -50,7 +50,12 @@ func (h *BlogHandler) CreateBlog(c *gin.Context) {
 	}
 
 	blog := &org.Blog{
-		Text: req.Text,
+		Title:   req.Title,
+		Content: req.Content,
+		Excerpt: req.Excerpt,
+		Date:    req.Date,
+		Tag:     req.Tag,
+		Image:   req.Image,
 	}
 
 	if err := h.service.CreateBlog(blog); err != nil {
@@ -96,7 +101,24 @@ func (h *BlogHandler) UpdateBlog(c *gin.Context) {
 		return
 	}
 
-	blog.Text = req.Text
+	if req.Title != "" {
+		blog.Title = req.Title
+	}
+	if req.Content != "" {
+		blog.Content = req.Content
+	}
+	if req.Excerpt != "" {
+		blog.Excerpt = req.Excerpt
+	}
+	if req.Tag != "" {
+		blog.Tag = req.Tag
+	}
+	if req.Image != "" {
+		blog.Image = req.Image
+	}
+	if !req.Date.IsZero() {
+		blog.Date = req.Date
+	}
 
 	if err := h.service.UpdateBlog(blog); err != nil {
 		c.JSON(http.StatusInternalServerError, response.NewServerResponse(err.Error()))
