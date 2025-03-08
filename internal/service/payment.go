@@ -23,6 +23,10 @@ func (s *PaymentService) GetPayment(id string) (*payments.Payment, error) {
 	return s.repo.GetByID(uuid.MustParse(id))
 }
 
+func (s *PaymentService) UpdatePayment(payment *payments.Payment) (error) {
+	return s.repo.Update(payment)
+}
+
 func (s *PaymentService) GetPaymentByReference(reference string) (*payments.Payment, error) {
 	return s.repo.GetByReference(reference)
 }

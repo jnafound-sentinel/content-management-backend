@@ -33,6 +33,10 @@ func (r *paymentRepository) GetByID(id uuid.UUID) (*paymentModels.Payment, error
 	return &payment, nil
 }
 
+func (r *paymentRepository) Update(payment *paymentModels.Payment) error {
+	return r.db.Save(payment).Error
+}
+
 func (r *paymentRepository) GetByReference(reference string) (*paymentModels.Payment, error) {
 	var payment paymentModels.Payment
 	err := r.db.Where("reference = ?", reference).First(&payment).Error
