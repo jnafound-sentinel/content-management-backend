@@ -39,10 +39,17 @@ func main() {
 
 	userRepo := database.NewUserRepository(db)
 	blogRepo := database.NewBlogRepository(db)
+	donationRepo := database.NewDonationRepository(db)
+	paymentRepo := database.NewPaymentRepository(db)
+	beneficiaryRepo := database.NewBeneficiaryRepository(db)
 
 	userService := service.NewUserService(userRepo)
 	blogService := service.NewBlogService(blogRepo)
+	donationService := service.NewDonationService(donationRepo)
+	paymentService := service.NewPaymentService(paymentRepo)
+	beneficiaryService := service.NewBeneficiaryService(beneficiaryRepo)
 
+	paystackService := service.NewPaystackService(cfg)
 	emailService, err := service.NewEmailService(cfg)
 	if err != nil {
 		log.Fatal("Could not load Email Service configurations and Templates.")
@@ -51,6 +58,9 @@ func main() {
 	userHandler := handler.NewUserHandler(userService, cfg)
 	authHandler := handler.NewAuthHandler(userService, emailService, cfg)
 	blogHandler := handler.NewBlogHandler(blogService, cfg)
+	donationHandler := handler.NewDonationHandler(donationService, cfg)
+	paymentHandler := handler.NewPaymentHandler(paymentService, paystackService, donationService, cfg)
+	beneficiaryHandler := handler.NewBeneficiaryHandler(beneficiaryService, cfg)
 
 	r := gin.Default()
 	r.Use(cors.Default())
@@ -60,6 +70,9 @@ func main() {
 		userHandler.RegisterRoutes(api)
 		authHandler.RegisterRoutes(api)
 		blogHandler.RegisterRoutes(api)
+		donationHandler.RegisterRoutes(api)
+		paymentHandler.RegisterRoutes(api)
+		beneficiaryHandler.RegisterRoutes(api)
 	}
 
 	r.Run(fmt.Sprintf(":%s", cfg.Port))
