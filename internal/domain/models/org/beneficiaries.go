@@ -6,10 +6,11 @@ import (
 )
 
 type Beneficiary struct {
-	ID uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
-
-	Award       string `gorm:"type:text" json:"award"`
-	Scholarship string `gorm:"type:text" json:"scholarship"`
+	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	RecipientName string    `gorm:"type:text" json:"recipient"`
+	Image         string    `gorm:"type:text" json:"image"`
+	Award         string    `gorm:"type:text" json:"award"`
+	Scholarship   string    `gorm:"type:text" json:"scholarship"`
 }
 
 func (b *Beneficiary) BeforeCreate(tx *gorm.DB) (err error) {
