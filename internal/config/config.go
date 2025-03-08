@@ -9,30 +9,32 @@ import (
 )
 
 type Config struct {
-	DBHost        string
-	DBUser        string
-	DBPassword    string
-	DBName        string
-	DBPort        string
-	Port          string
-	SecretKey     []byte
-	TokenDuration time.Duration
-	DomainID      string
-	ResendApiKey  string
+	DBHost            string
+	DBUser            string
+	DBPassword        string
+	DBName            string
+	DBPort            string
+	Port              string
+	SecretKey         []byte
+	TokenDuration     time.Duration
+	DomainID          string
+	ResendApiKey      string
+	PaystackSecretKey string
 }
 
 func LoadConfig() (*Config, error) {
 	return &Config{
-		DBHost:        os.Getenv("DB_HOST"),
-		DBUser:        os.Getenv("DB_USER"),
-		DBPassword:    os.Getenv("DB_PASSWORD"),
-		DBName:        os.Getenv("DB_NAME"),
-		DBPort:        os.Getenv("DB_PORT"),
-		Port:          os.Getenv("PORT"),
-		SecretKey:     []byte(os.Getenv("SECRET")),
-		TokenDuration: time.Duration(GetInt("TOKEN_EXPIRE_TIME", 24)) * time.Hour,
-		DomainID:      os.Getenv("DOMAIN_ID"),
-		ResendApiKey:  os.Getenv("RESEND_API_KEY"),
+		DBHost:            os.Getenv("DB_HOST"),
+		DBUser:            os.Getenv("DB_USER"),
+		DBPassword:        os.Getenv("DB_PASSWORD"),
+		DBName:            os.Getenv("DB_NAME"),
+		DBPort:            os.Getenv("DB_PORT"),
+		Port:              os.Getenv("PORT"),
+		SecretKey:         []byte(os.Getenv("SECRET")),
+		TokenDuration:     time.Duration(GetInt("TOKEN_EXPIRE_TIME", 24)) * time.Hour,
+		DomainID:          os.Getenv("DOMAIN_ID"),
+		ResendApiKey:      os.Getenv("RESEND_API_KEY"),
+		PaystackSecretKey: os.Getenv("PAYSTACK_SECRET_KEY"),
 	}, nil
 }
 
