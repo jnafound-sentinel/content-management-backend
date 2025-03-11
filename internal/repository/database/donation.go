@@ -42,6 +42,10 @@ func (r *donationRepository) GetByTagName(tagName string) (*paymentModels.Donati
 	return &donation, nil
 }
 
+func (r *donationRepository) Update(donation *paymentModels.Donation) error {
+	return r.db.Save(donation).Error
+}
+
 func (r *donationRepository) Delete(id uuid.UUID) error {
 	return r.db.Delete(&paymentModels.Donation{}, id).Error
 }

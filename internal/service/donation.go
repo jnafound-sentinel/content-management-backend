@@ -27,6 +27,10 @@ func (s *DonationService) GetDonationByTagName(tagName string) (*payments.Donati
 	return s.repo.GetByTagName(tagName)
 }
 
+func (s *DonationService) UpdateDonation(donation *payments.Donation) (error) {
+	return s.repo.Update(donation)
+}
+
 func (s *DonationService) DeleteDonation(id string) error {
 	return s.repo.Delete(uuid.MustParse(id))
 }
