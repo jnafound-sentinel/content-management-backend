@@ -167,18 +167,23 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 		return
 	}
 
-	payment := &payments.Payment{
-		DonationID: uuid.MustParse(req.DonationID),
-		Amount:     req.Amount,
-		Reference:  req.Reference,
-		Status:     "pending",
-		Donation:   *donation,
+	if donation.ID == uuid.Nil {
+		c.JSON(http.StatusBadRequest, response.NewFailureResponse("donation not found"))
+		return
 	}
 
 	ref, authURL, err := h.paystackService.InitiateTransaction(req.Email, req.CallbackUrl, float64(req.Amount))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.NewFailureResponse(err.Error()))
 		return
+	}
+
+	payment := &payments.Payment{
+		DonationID: uuid.MustParse(req.DonationID),
+		Amount:     req.Amount,
+		Reference:  ref,
+		Status:     "pending",
+		Donation:   *donation,
 	}
 
 	if err := h.service.CreatePayment(payment); err != nil {
@@ -204,7 +209,7 @@ func (h *PaymentHandler) VerifyPayment(c *gin.Context) {
 		return
 	}
 
-	payment, err := h.service.GetPayment(req.PaymentID)
+	payment, err := h.service.GetPaymentByReference(req.Reference)
 	if err != nil {
 		c.JSON(http.StatusNotFound, response.NewServerResponse(err.Error()))
 		return
