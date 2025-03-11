@@ -14,6 +14,5 @@ type DonationResponse struct {
 	TagName     string    `json:"tag_name"`
 	Purpose     string    `json:"purpose"`
 	Amount      int64     `json:"amount"`
-	Status      string    `json:"status"`
 	Description string    `json:"description"`
 }
