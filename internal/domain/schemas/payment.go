@@ -5,7 +5,6 @@ type CreatePaymentRequest struct {
 	Email       string `json:"email" binding:"required"`
 	CallbackUrl string `json:"callback_url" binding:"required"`
 	Amount      int64  `json:"amount" binding:"required"`
-	Reference   string `json:"reference" binding:"required"`
 }
 
 type PaymentResponse struct {
@@ -18,5 +17,4 @@ type PaymentResponse struct {
 
 type VerifyPaymentRequest struct {
 	Reference string `json:"reference"`
-	PaymentID string `json:"payment_id"`
 }
