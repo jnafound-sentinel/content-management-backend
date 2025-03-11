@@ -35,6 +35,7 @@ services:
       - TOKEN_EXPIRE_TIME=24
       - DOMAIN_ID=your_domain_id
       - RESEND_API_KEY=your_resend_api_key
+      - PAYSTACK_SECRET_KEY=sk_secret_key
     depends_on:
       - postgres
     networks:
