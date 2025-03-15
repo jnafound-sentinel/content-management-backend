@@ -52,8 +52,11 @@ func (h *BeneficiaryHandler) CreateBeneficiary(c *gin.Context) {
 	beneficiary := &org.Beneficiary{
 		RecipientName: req.RecipientName,
 		Image:         req.Image,
-		Award:         req.Award,
-		Scholarship:   req.Scholarship,
+		ProgramType:   req.ProgramType,
+		ShortBio:      req.ShortBio,
+		FullBio:       req.FullBio,
+		Quote:         req.Quote,
+		Featured:      req.Featured,
 	}
 
 	if err := h.service.CreateBeneficiary(beneficiary); err != nil {
@@ -102,11 +105,20 @@ func (h *BeneficiaryHandler) UpdateBeneficiary(c *gin.Context) {
 	if req.RecipientName != "" {
 		beneficiary.RecipientName = req.RecipientName
 	}
-	if req.Award != "" {
-		beneficiary.Award = req.Award
+	if req.ProgramType != "" {
+		beneficiary.ProgramType = req.ProgramType
 	}
-	if req.Scholarship != "" {
-		beneficiary.Scholarship = req.Scholarship
+	if req.ShortBio != "" {
+		beneficiary.ShortBio = req.ShortBio
+	}
+	if req.FullBio != "" {
+		beneficiary.FullBio = req.FullBio
+	}
+	if req.Quote != "" {
+		beneficiary.Quote = req.Quote
+	}
+	if req.Featured != beneficiary.Featured {
+		beneficiary.Featured = req.Featured
 	}
 	if req.Image != "" {
 		beneficiary.Image = req.Image

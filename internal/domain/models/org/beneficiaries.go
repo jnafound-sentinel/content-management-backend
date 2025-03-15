@@ -7,10 +7,13 @@ import (
 
 type Beneficiary struct {
 	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
-	RecipientName string    `gorm:"type:text" json:"recipient"`
+	RecipientName string    `gorm:"type:text" json:"name"`
 	Image         string    `gorm:"type:text" json:"image"`
-	Award         string    `gorm:"type:text" json:"award"`
-	Scholarship   string    `gorm:"type:text" json:"scholarship"`
+	ProgramType   string    `gorm:"type:text" json:"program_type"`
+	ShortBio      string    `gorm:"type:text" json:"short_bio"`
+	FullBio       string    `gorm:"type:text" json:"full_bio"`
+	Quote         string    `gorm:"type:text" json:"quote"`
+	Featured      bool      `gorm:"type:boolean;default:false" json:"featured"`
 }
 
 func (b *Beneficiary) BeforeCreate(tx *gorm.DB) (err error) {
