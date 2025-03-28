@@ -102,7 +102,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	if user.EmailVerified == false {
+	if !user.EmailVerified {
 		c.JSON(http.StatusUnauthorized, response.NewFailureResponse("User account not verified. Please verify your Account"))
 		return
 	}
@@ -112,6 +112,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, response.NewServerResponse(err.Error()))
 		return
 	}
+
+	c.SetCookie("Authorization", token, time.Now().Add(h.cfg.TokenDuration).Hour(), "/", "localhost", false, true)
 
 	c.JSON(
 		http.StatusOK,

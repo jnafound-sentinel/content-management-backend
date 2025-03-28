@@ -13,7 +13,14 @@ import (
 func JWTMiddleware(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get the token from the Authorization header
-		tokenString := c.GetHeader("Authorization")
+		tokenString, err := c.Cookie("Authorization")
+		if err != nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "No cookie found",
+			})
+			return
+		}
 		if tokenString == "" {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -34,7 +41,7 @@ func JWTMiddleware(cfg *config.Config) gin.HandlerFunc {
 
 		tokenString = strings.TrimPrefix(tokenString, bearerPrefix)
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			return cfg.SecretKey, nil
 		})
 		if err != nil || !token.Valid {
